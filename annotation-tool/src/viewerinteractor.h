@@ -9,12 +9,16 @@
 #include "pointcloudmodifier.h"
 #include "objectsinformation.h"
 
-
+#include <eigen3/Eigen/Eigen>
 
 class viewerInteractor
 {
 public:
     viewerInteractor();
+
+
+    void getPose();
+
 
     /** \brief Register the point picking callback
       */
@@ -190,6 +194,7 @@ private:
 
     // Current box transformation
     Eigen::Affine3f _transformation;
+    Eigen::Affine3f _viewPose;
 
     // Bounding box as a point cloud
     pcl::PointCloud<pcl::PointXYZ>::Ptr boundingBox;
@@ -197,6 +202,8 @@ private:
     /** \brief Actualize the box transformation
       */
     void actualizeTransformation();
+
+
 };
 
 #endif // VIEWERINTERACTOR_H

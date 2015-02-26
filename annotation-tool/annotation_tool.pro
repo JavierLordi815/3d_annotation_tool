@@ -18,7 +18,8 @@ SOURCES += src/main.cpp\
     src/objectsinformation.cpp \
     src/selectobjectdialog.cpp \
     src/initialmessagedialog.cpp \
-    src/filtervaluesdialog.cpp
+    src/filtervaluesdialog.cpp \
+    src/addobjectdialog.cpp
 
 
 HEADERS  += src/mainwindow.h \
@@ -28,14 +29,16 @@ HEADERS  += src/mainwindow.h \
     src/objectsinformation.h \
     src/selectobjectdialog.h \
     src/initialmessagedialog.h \
-    src/filtervaluesdialog.h
+    src/filtervaluesdialog.h \
+    src/addobjectdialog.h
 
 
 FORMS    += src/mainwindow.ui \
     src/newobjectdialog.ui \
     src/selectobjectdialog.ui \
     src/initialmessagedialog.ui \
-    src/filtervaluesdialog.ui
+    src/filtervaluesdialog.ui \
+    src/addobjectdialog.ui
 
 INCLUDEPATH +=  "/opt/ros/fuerte/include/pcl-1.5" \
 		"/usr/local/include/opencv" \
@@ -43,7 +46,10 @@ INCLUDEPATH +=  "/opt/ros/fuerte/include/pcl-1.5" \
 		#"/home/adria/openCV/opencv/include/opencv/" \
 		"/usr/include/vtk-5.8" \
 
-RESOURCES += icons/icons.qrc
+RESOURCES += \
+    icons/icons.qrc
+
+OTHER_FILES +=
 
 
 

@@ -11,7 +11,7 @@
 #include <pcl/visualization/pcl_visualizer.h>
 
 #include <eigen3/Eigen/Eigen>
-
+#include <QMessageBox>
 
 #define PI 3.14159265
 
@@ -70,15 +70,58 @@ void viewerInteractor::getPointPicked(pcl::PointXYZRGB *point){
     // Draw an sphere arround the selected point
     QString sphere = QString::number(_numberOfSpheres);
     _viewer->addSphere(*point, 0.009, 1, 1, 0.0, sphere.toStdString());
-    _numberOfSpheres++;
+
 }
 
 void viewerInteractor::getPointsPicked(int nPoints, std::vector<pointT> *pointsPicked){
-    for(int i=0; i<nPoints; i++){
+   /* if (nPoints == 4){
+        //point 1
         pcl::PointXYZRGB point;
         getPointPicked(&point);
         pointsPicked->push_back(point);
+        //point 2
+        pcl::PointXYZRGB point;
+        getPointPicked(&point);
+        pointsPicked->push_back(point);
+        //Draw line
+
+        _viewer->addLine(pointsPicked[0],pointsPicked[1],id = "top");
+
+        //point 3
+        pcl::PointXYZRGB point;
+        getPointPicked(&point);
+        pointsPicked->push_back(point);
+
+        //point 4
+        pcl::PointXYZRGB point;
+        getPointPicked(&point);
+        pointsPicked->push_back(point);
+
+    }*/
+
+    for(int i=0; i<nPoints; i++){
+        pcl::PointXYZRGB point;
+        getPointPicked(&point);
+
+        int r = QMessageBox::question(NULL,
+                                     "Confirm point selection",
+                                     "Is the selected point correct?",
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (r == QMessageBox::Yes) {
+            _numberOfSpheres++;
+             pointsPicked->push_back(point);
+        }
+        else{
+            QMessageBox::information(NULL,
+                                     "Re-selection",
+                                     "Please re-select a point.");
+             QString sp_id = QString::number(_numberOfSpheres);
+            _viewer->removeShape(sp_id.toStdString());
+            i--;
+        }
+
     }
+
 }
 
 void viewerInteractor::cleanViewer(){
@@ -327,8 +370,13 @@ vtkSmartPointer<vtkRenderWindow> viewerInteractor::getRenderWindow(int width, in
 
 Eigen::Affine3f viewerInteractor::getCameraParametersAndPose(std::vector<pcl::visualization::Camera>& cameras){
     Eigen::Affine3f viewPose;
-    viewPose = _viewer->getViewerPose();
+    _viewPose = _viewer->getViewerPose();
     _viewer->getCameras(cameras);
     return viewPose;
 
 }
+
+void viewerInteractor::getPose(){
+     _viewPose = _viewer->getViewerPose();
+}
+

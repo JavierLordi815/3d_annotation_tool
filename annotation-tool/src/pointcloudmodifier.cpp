@@ -40,7 +40,7 @@ void pointCloudModifier::automaticTableDetection(pcl::PointCloud<pointT>::Ptr cl
     proj.setModelCoefficients (_planeCoefficients);
     proj.filter (*cloudProjected);
 
-    // Move the coordenate system of the point cloud to the table plane
+    // Move the coordinate system of the point cloud to the table plane
 
     // 1st - Set the translation to the center of the plane negated
     Eigen::Vector3f cloud_plane_center_negated(0,0,0);

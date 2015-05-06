@@ -1357,6 +1357,7 @@
    <addaction name="actionDownsample_point_cloud"/>
    <addaction name="separator"/>
    <addaction name="actionInsert_new_object"/>
+   <addaction name="actionUndoPoints"/>
    <addaction name="separator"/>
    <addaction name="actionConfirm_position"/>
    <addaction name="actionDelete_object"/>
@@ -1773,6 +1774,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+K</string>
+   </property>
+  </action>
+  <action name="actionUndoPoints">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/undo_icon.png</normaloff>:/undo_icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>UndoPoints</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo Selected Points (Ctrl + Shift + Z)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>

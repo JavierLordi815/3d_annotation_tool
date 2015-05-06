@@ -177,6 +177,8 @@ public:
 
     Eigen::Affine3f getCameraParametersAndPose(std::vector<pcl::visualization::Camera>& cameras);
 
+    void undo_points();
+
 private:
     // PCL visualizer
     boost::shared_ptr<pcl::visualization::PCLVisualizer> _viewer;
@@ -202,6 +204,10 @@ private:
     /** \brief Actualize the box transformation
       */
     void actualizeTransformation();
+
+    bool points_picked;
+    bool first_pick;
+    int npointsToBepicked;
 
 
 };

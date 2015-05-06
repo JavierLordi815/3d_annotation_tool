@@ -89,7 +89,7 @@ void MainWindow::on_actionExit_triggered(){
                                      QMessageBox::Yes , QMessageBox::No);
         if (r == QMessageBox::Yes) {
             on_actionSave_PCD_File_triggered();
-            if(!_cloudModified) MainWindow::close();
+            //if(!_cloudModified) MainWindow::close();
         }
         else
             MainWindow::close();
@@ -1071,7 +1071,7 @@ bool MainWindow::okToExit(){
                                  tr("Are you sure you want to exit?"),
                                  QMessageBox::Yes , QMessageBox::No);
     if (r == QMessageBox::Yes) {
-        return true;
+        on_actionExit_triggered();
     } else
         return false;
 }
@@ -1388,4 +1388,9 @@ void MainWindow::on_actionShiftorigin_triggered()
         QMessageBox::warning(this,
                              "No PCD file opened",
                              "Open a PCD file and try again..");
+}
+
+void MainWindow::on_actionUndoPoints_triggered()
+{
+    viewInteractor.undo_points();
 }

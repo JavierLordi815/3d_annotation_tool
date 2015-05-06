@@ -140,6 +140,8 @@ private slots:
     void on_actionShiftorigin_triggered();
 
 
+    void on_actionUndoPoints_triggered();
+
 private:
     // The main window used
     Ui::MainWindow *_ui;

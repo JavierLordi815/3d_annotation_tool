@@ -474,12 +474,13 @@ void MainWindow::on_actionDesk_segmentation_triggered(){
             if(_showInfoMsgs) QMessageBox::information(this,
                                                        "Pick a point",
                                                        "Pick the lower left corner of the table with shift+left mouse button.");
-            viewInteractor.getPointPicked(&pointPicked);
 
+            viewInteractor.getPointPicked(&pointPicked);
+		
             // Move the pointcloud to the lower left corner of the table
             cloudModifier.translate_on_plane_x_y(_cloud, _cloud, pointPicked);
             visualize();
-
+	
             // Pick the second point needed: lower right corner
             if(_showInfoMsgs) QMessageBox::information(this,
                                                        "Pick a point",
@@ -500,6 +501,7 @@ void MainWindow::on_actionDesk_segmentation_triggered(){
 
 
             // Eliminate points below the table
+
             // Min value of 0 remove points from the table -> set to -0.02
             //cloudModifier.filter_axis(_cloud, _cloud, "z", -0.02, 5);
 
@@ -829,7 +831,9 @@ void MainWindow::on_poseInfo_itemChanged(QTreeWidgetItem *item, int column){
 void MainWindow::save_Option(int type)
 {
     QString fileNamePCD = "";
- if(_pcdLoaded){
+ 
+if(_pcdLoaded){
+    
     if (type == 1){
     fileNamePCD = QFileDialog::getSaveFileName(this,
                                                        tr("Save PCD and XML files"));
@@ -842,6 +846,11 @@ void MainWindow::save_Option(int type)
                                                         tr("Save As PCD and XML files"));
                                                          //_fileName.remove(_fileName.size()-4,4),
                                                          //tr(""));
+    }
+
+    
+    if(fileNamePCD != ""){
+    _firstsave = false;
     }
 
     if (!fileNamePCD.contains(".", Qt::CaseInsensitive))
@@ -870,7 +879,7 @@ void MainWindow::save_Option(int type)
                                  "XML file not saved",
                                  "The objects' information has not been saved because there is no information.");
 
-        _firstsave = false;
+        
     }
     else{
         QMessageBox::warning(this, "Error", "Files not saved.");

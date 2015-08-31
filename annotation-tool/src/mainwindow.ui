@@ -1287,6 +1287,7 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSave_PCD_File"/>
+    <addaction name="actionSaveAs_PCD_xml"/>
     <addaction name="separator"/>
     <addaction name="actionImport_objects_info"/>
     <addaction name="actionExport_objects_info"/>
@@ -1421,6 +1422,24 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSaveAs_PCD_xml">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/Actions-document-save-as-icon.png</normaloff>:/Actions-document-save-as-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save As PCD File</string>
+   </property>
+   <property name="toolTip">
+    <string>Save As PCD File (Shift+Ctrl+S)</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Ctrl+S</string>
    </property>
   </action>
   <action name="actionAutomatic_plane_detection">
@@ -1758,7 +1777,7 @@
     <string>Save As PCD File (Shift+Ctrl+S)</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
+    <string>Shift+Ctrl+S</string>
    </property>
   </action>
   <action name="actionShiftorigin">

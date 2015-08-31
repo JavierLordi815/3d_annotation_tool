@@ -39,7 +39,7 @@ public:
 
 private Q_SLOTS:
 
-void on_actionOpen_triggered();
+    void on_actionOpen_triggered();
 
     void on_actionExit_triggered();
 
@@ -140,7 +140,6 @@ void on_actionOpen_triggered();
     void on_actionSaveAs_PCD_xml_triggered();
 
     void on_actionShiftorigin_triggered();
-
 
     void on_actionUndoPoints_triggered();
 

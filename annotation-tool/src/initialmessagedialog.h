@@ -17,8 +17,10 @@ public:
 
     bool getBoolValue();
     
+
 private Q_SLOTS:
-    void on_pushButton_clicked();
+
+void on_pushButton_clicked();
 
 private:
     Ui::initialmessagedialog *ui;

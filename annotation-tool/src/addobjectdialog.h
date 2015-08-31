@@ -20,8 +20,9 @@ public:
 
     void setObjectList(QStringList listObjects);
 
+
 private Q_SLOTS:
-    void on_objectSelected_clicked();
+   void on_objectSelected_clicked();
 
     void on_lineEdit_textEdited(const QString &arg1);
 

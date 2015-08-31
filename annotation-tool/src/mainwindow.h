@@ -36,8 +36,10 @@ public:
 
 // All the slots to interact with the application
 // More details about them in the .cpp file
+
 private Q_SLOTS:
-    void on_actionOpen_triggered();
+
+void on_actionOpen_triggered();
 
     void on_actionExit_triggered();
 

@@ -63,6 +63,7 @@ void MainWindow::on_actionOpen_triggered(){
         info_doc.remove("bin");
         info_doc.append("/info_app.xml");
 
+
         boost::filesystem::path p(_fileName.toStdString());
         std::string path = p.parent_path().string();
         _lastDir = QString::fromStdString(path);

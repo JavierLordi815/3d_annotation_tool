@@ -23,6 +23,7 @@ public:
     void setObjectList(QStringList listObjects);
     
 private Q_SLOTS:
+
     void on_objectSelected_clicked();
 
     void on_comboBox_currentIndexChanged(const QString &arg1);

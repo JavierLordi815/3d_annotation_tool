@@ -22,8 +22,8 @@ QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 # generate rules for building source files that moc generates
 QT4_WRAP_CPP(app_tool_HEADERS_MOC ${app_tool_HEADERS})
 
-add_executable (Annotation_tool ${app_tool_SOURCES} ${app_tool_HEADERS_MOC} ${QtApp_RCC_SRCS} ${app_tool_HDRS})
-target_link_libraries (Annotation_tool QVTK vtkHybrid ${PCL_LIBRARIES} ${QT_LIBRARIES} pcl_visualization ${catkin_LIBRARIES})
+add_executable (annotation_tool ${app_tool_SOURCES} ${app_tool_HEADERS_MOC} ${QtApp_RCC_SRCS} ${app_tool_HDRS})
+target_link_libraries (annotation_tool QVTK vtkHybrid ${PCL_LIBRARIES} ${QT_LIBRARIES} pcl_visualization ${catkin_LIBRARIES})
 
 #add_custom_command(TARGET Annotation_tool POST_BUILD
 #    COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -47,7 +47,7 @@ execute_process(COMMAND mkdir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 foreach (_itemname ${EXECUTABLE_DEPENDENCIES})
     message(STATUS "Copying ............ ${_itemname}")
-    execute_process(COMMAND cp -r ${Annotation_tool_SOURCE_DIR}${_itemname} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    execute_process(COMMAND cp -r ${annotation_tool_SOURCE_DIR}${_itemname} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endforeach()
  
 #########################################################################

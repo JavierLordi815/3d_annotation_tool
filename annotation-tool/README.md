@@ -27,10 +27,11 @@ System requirements
 With ROS Indigo:
 -----------------------
 If (ros-indigo-desktop-full) is installed in your machine, you can proceed 
-with the installation of the 3d_annotation_tool.
+with the installation of the 3D Annotation Tool.
 
 Else,
-1. Make sure that the pcl package is installed. If it is not installed:  
+
+1. Make sure that the pcl package is installed:  
 `sudo apt-get install libpcl-all-dev`
 	
 2. Install the vtk-qt library:  

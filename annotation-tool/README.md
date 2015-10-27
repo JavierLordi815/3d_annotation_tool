@@ -31,16 +31,16 @@ System requirements
 If (ros-indigo-desktop-full) is installed in your machine, you can proceed 
 with the installation of the 3D Annotation Tool.
 
-Else,
+Else, make sure the following packages are installed
 
-1. Make sure that the pcl package is installed:  
-`sudo apt-get install libpcl-all-dev`
+1. Install the catkin library:
+`sudo apt-get install ros-indigo-catkin`
 	
-2. Install the vtk-qt library:  
-`sudo apt-get install libvtk5.8-qt4`
+2. Make sure that the pcl package is installed:
+`sudo apt-get install libpcl-1.7-all-dev` 
 
-3. Install the catkin library:  
-`sudo apt-get install ros-indigo-catkin` 
+3. Install the vtk-qt library:
+`sudo apt-get install libvtk5.8-qt4`
 
 
 Installation

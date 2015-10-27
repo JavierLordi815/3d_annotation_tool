@@ -25,7 +25,7 @@ System requirements
 3D Annotation Tool requires installation of the ROS Indigo and catkin as prerequisites.
 
 With ROS Indigo:
------------------------
+
 If (ros-indigo-desktop-full) is installed in your machine, you can proceed 
 with the installation of the 3D Annotation Tool.
 
@@ -46,7 +46,6 @@ Installation
 To install the annotation tool:
 
 With catkin:
---------------------
 
 1. Git clone or extract the files into your catkin workspace (`/catkin_workspace_path/src/3d_annotation_tool/`)
 
@@ -60,7 +59,6 @@ Using the tool:
 To use the annotation tool:
 
 With catkin:
-----------------
 
 1. `cd /catkin_workspace_path/devel/lib/3d_annotation_tool/`
 

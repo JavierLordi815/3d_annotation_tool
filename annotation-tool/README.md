@@ -2,7 +2,10 @@
 ==================
 Author: Adrià Gallart del Burgo
 
-Co-author: Bala, Akshaya
+Co-author: Balasubramanian Rajasekaran, Akshaya Thippur
+
+Emails: bara@kth.se, akshaya@kth.se
+
 
 3D Annotation Tool is an application designed to annotate objects in a point
 cloud scene. Initially, it was developed with the aim to annotate the objects of
@@ -24,8 +27,6 @@ Contents
 System requirements
 -------------------------------
 3D Annotation Tool requires installation of the ROS Indigo and catkin as prerequisites.
-
-With ROS Indigo:
 
 If (ros-indigo-desktop-full) is installed in your machine, you can proceed 
 with the installation of the 3D Annotation Tool.

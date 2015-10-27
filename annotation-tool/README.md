@@ -1,6 +1,7 @@
 3D ANNOTATION TOOL
 ==================
 Author: Adrià Gallart del Burgo
+
 Co-author: Bala, Akshaya
 
 3D Annotation Tool is an application designed to annotate objects in a point

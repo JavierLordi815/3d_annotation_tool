@@ -54,7 +54,7 @@ With catkin:
 3. `catkin_make`
 
 
-Using the tool:
+Using the tool
 --------------------------------
 To use the annotation tool:
 

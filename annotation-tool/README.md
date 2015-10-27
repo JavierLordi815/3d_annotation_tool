@@ -39,17 +39,6 @@ Else,
 3. Install the catkin library:  
 `sudo apt-get install ros-indigo-catkin` 
 
-Without ROS Indigo:
-----------------------------
-If the ROS is not installed, the following is required:
-
-1. PCL library:  
-`sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl`  
-`sudo apt-get update`  
-`sudo apt-get install libpcl-all-dev`  
-
-2. VTK-QT library:  
-`sudo apt-get install libvtk5.8-qt`
 
 Installation
 --------------------------------

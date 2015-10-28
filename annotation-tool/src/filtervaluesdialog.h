@@ -17,8 +17,10 @@ public:
 
     float getLeafSize();
     
-private slots:
-    void on_pushButton_clicked();
+
+private Q_SLOTS:
+
+ void on_pushButton_clicked();
 
 private:
     Ui::filtervaluesdialog *ui;

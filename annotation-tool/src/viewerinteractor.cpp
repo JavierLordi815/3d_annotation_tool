@@ -11,7 +11,7 @@
 #include <pcl/visualization/pcl_visualizer.h>
 
 #include <eigen3/Eigen/Eigen>
-
+#include <QMessageBox>
 
 #define PI 3.14159265
 
@@ -34,11 +34,16 @@ viewerInteractor::viewerInteractor():
     boundingBox->width  = 8;
     boundingBox->height = 1;
     boundingBox->points.resize (boundingBox->width * boundingBox->height);
+    points_picked = false;
+    _numberOfSpheres = 0;
 }
 
 int nPoints = 0;
 bool picked(false);
 pcl::PointXYZRGB pickedPoints;
+
+
+std::vector<pointT> *temp_pointsPicked;
 
 // Callback function
 void pp_callbacks (const pcl::visualization::PointPickingEvent& event, void* viewer_void){
@@ -70,15 +75,73 @@ void viewerInteractor::getPointPicked(pcl::PointXYZRGB *point){
     // Draw an sphere arround the selected point
     QString sphere = QString::number(_numberOfSpheres);
     _viewer->addSphere(*point, 0.009, 1, 1, 0.0, sphere.toStdString());
-    _numberOfSpheres++;
+
 }
 
 void viewerInteractor::getPointsPicked(int nPoints, std::vector<pointT> *pointsPicked){
-    for(int i=0; i<nPoints; i++){
+   /* if (nPoints == 4){
+        //point 1
         pcl::PointXYZRGB point;
         getPointPicked(&point);
         pointsPicked->push_back(point);
+        //point 2
+        pcl::PointXYZRGB point;
+        getPointPicked(&point);
+        pointsPicked->push_back(point);
+        //Draw line
+
+        _viewer->addLine(pointsPicked[0],pointsPicked[1],id = "top");
+
+        //point 3
+        pcl::PointXYZRGB point;
+        getPointPicked(&point);
+        pointsPicked->push_back(point);
+
+        //point 4
+        pcl::PointXYZRGB point;
+        getPointPicked(&point);
+        pointsPicked->push_back(point);
+
+    }*/
+
+    npointsToBepicked = nPoints;
+    points_picked = true;
+    first_pick = true;
+    int i = 0;
+
+    while(i < nPoints){
+        pcl::PointXYZRGB point;
+        getPointPicked(&point);
+
+        _numberOfSpheres++;
+        npointsToBepicked--;
+
+        i = nPoints - npointsToBepicked;
+
+        if (first_pick == true){
+            pointsPicked->push_back(point);
+            temp_pointsPicked =  pointsPicked;
+            first_pick = false;
+        }
+        else{
+            pointsPicked = temp_pointsPicked;
+            pointsPicked->push_back(point);
+            temp_pointsPicked =  pointsPicked;
+        }
+
+        if (i == nPoints){
+            int r = QMessageBox::question(NULL, "Confirm point selection",
+                                                "Click 'Yes'' to confirm selected points. And 'No' to Undo last point and continue selection.",
+                                                 QMessageBox::Yes | QMessageBox::No);
+            if (r == QMessageBox::No){
+                undo_points();
+                i = nPoints - npointsToBepicked;
+
+            }
+        }
+
     }
+    points_picked = false;
 }
 
 void viewerInteractor::cleanViewer(){
@@ -327,8 +390,31 @@ vtkSmartPointer<vtkRenderWindow> viewerInteractor::getRenderWindow(int width, in
 
 Eigen::Affine3f viewerInteractor::getCameraParametersAndPose(std::vector<pcl::visualization::Camera>& cameras){
     Eigen::Affine3f viewPose;
-    viewPose = _viewer->getViewerPose();
+    _viewPose = _viewer->getViewerPose();
     _viewer->getCameras(cameras);
     return viewPose;
 
+}
+
+void viewerInteractor::getPose(){
+     _viewPose = _viewer->getViewerPose();
+}
+
+void viewerInteractor::undo_points()
+{
+    if (points_picked == true)
+    {
+        _numberOfSpheres--;
+        QString sp_id = QString::number(_numberOfSpheres);
+        _viewer->removeShape(sp_id.toStdString());
+
+
+        QMessageBox::information(NULL,
+                                 "Undo point",
+                                 "Please re-select a point.");
+
+       temp_pointsPicked->pop_back();
+       npointsToBepicked++;
+
+    }
 }

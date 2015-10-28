@@ -2,12 +2,15 @@
 #include "ui_mainwindow.h"
 #include "newobjectdialog.h"
 #include "selectobjectdialog.h"
+#include "addobjectdialog.h"
 #include "initialmessagedialog.h"
+#include "objectsinformation.h"
 #include "filtervaluesdialog.h"
 #include "newobjectdialog.h"
 #include "qsr.h"
 
 #include "QMessageBox"
+#include "QCloseEvent"
 #include "QFileDialog"
 #include "QDesktopServices"
 #include "QUrl"
@@ -60,7 +63,8 @@ void MainWindow::on_actionOpen_triggered(){
         info_doc.remove("bin");
         info_doc.append("/info_app.xml");
 
-        boost::filesystem3::path p(_fileName.toStdString());
+
+        boost::filesystem::path p(_fileName.toStdString());
         std::string path = p.parent_path().string();
         _lastDir = QString::fromStdString(path);
 
@@ -86,17 +90,15 @@ void MainWindow::on_actionExit_triggered(){
                                      QMessageBox::Yes , QMessageBox::No);
         if (r == QMessageBox::Yes) {
             on_actionSave_PCD_File_triggered();
-            if(!_cloudModified) MainWindow::close();
+            //if(!_cloudModified) MainWindow::close();
         }
         else
             MainWindow::close();
     }
     else{
-        if(okToExit()){
-            MainWindow::close();
+        MainWindow::close();
         }
     }
-}
 
 // Next 6 functions: Slots for the buttons to
 // modify the x,y,z coordinate of the pose
@@ -255,19 +257,44 @@ void MainWindow::on_boxHeightLess_clicked(){
 
 // Save pcd file action
 void MainWindow::on_actionSave_PCD_File_triggered(){
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save file"),
-                                                    _fileName,
-                                                    tr("PCD Files(*.pcd)"));
-    if(!fileName.isEmpty()){
-        pcl::io::savePCDFile(fileName.toStdString(), *_cloud);
-        _fileName = fileName;
-        _cloudModified = false;
+
+    if(_pcdLoaded){
+
+    if (_firstsave){
+        save_Option(1); // Save
     }
-    else{
-        QMessageBox::warning(this, "Error", "Pcd file not saved.");
+    else
+    {
+            // Save the .pcd file
+
+            QString fileNamePCD = _fileName;
+
+            std::string fileName = _fileName.toStdString();
+            fileName.erase(fileName.find_last_of(".")+1, 3);
+            fileName.append("xml");
+
+            QString fileNameXML =  QString::fromStdString(fileName);
+
+            pcl::io::savePCDFileBinary(fileNamePCD.toStdString(), *_cloud);
+            _cloudModified = false;
+
+            // Save the objects' information
+            if(objectsInfo.getDeskLength() != -1){
+                objectsInfo.exportObjectsInformation(fileNameXML, _fileName, _scenario);
+            }
+            else
+                QMessageBox::warning(this,
+                                     "XML file not saved",
+                                     "The objects' information has not been saved because there is no information.");
+
+        }
     }
+    else
+        QMessageBox::warning(this,
+                             "No PCD file opened",
+                             "Open a PCD file and try again..");
 }
+
 
 // Actions to take when an item in the information tree
 // widget is selected
@@ -339,18 +366,22 @@ void MainWindow::on_treeWidget_itemSelectionChanged(){
     else {
         // Don't shown any object
         viewInteractor.cleanViewer();
-        clearPoseInfo();
+        //clearPoseInfo();
     }
 }
 
 // Automatic plane detection
 void MainWindow::on_actionAutomatic_plane_detection_triggered(){
     if(_pcdLoaded){
+
+        viewInteractor.getPose();
+
         // Automatic detection of the desk plane and move to the plane x-y
         cloudModifier.automaticTableDetection(_cloud, _cloud);
+
         visualize();
         _cloudModified = true;
-        _ui->actionDesk_segmentation->setEnabled(true);
+
 
         // If the automatic detection of the plane is not correct, it can be
         // calculated manually by picking three points.
@@ -443,12 +474,13 @@ void MainWindow::on_actionDesk_segmentation_triggered(){
             if(_showInfoMsgs) QMessageBox::information(this,
                                                        "Pick a point",
                                                        "Pick the lower left corner of the table with shift+left mouse button.");
-            viewInteractor.getPointPicked(&pointPicked);
 
+            viewInteractor.getPointPicked(&pointPicked);
+		
             // Move the pointcloud to the lower left corner of the table
             cloudModifier.translate_on_plane_x_y(_cloud, _cloud, pointPicked);
             visualize();
-
+	
             // Pick the second point needed: lower right corner
             if(_showInfoMsgs) QMessageBox::information(this,
                                                        "Pick a point",
@@ -467,16 +499,19 @@ void MainWindow::on_actionDesk_segmentation_triggered(){
                                                        "Pick a point on the upper edge of the table with shift+left mouse button");
             viewInteractor.getPointPicked(&pointPicked);
 
+
             // Eliminate points below the table
+
             // Min value of 0 remove points from the table -> set to -0.02
-            cloudModifier.filter_axis(_cloud, _cloud, "z", -0.02, 5);
+            //cloudModifier.filter_axis(_cloud, _cloud, "z", -0.02, 5);
 
             //Eliminate points at right and left side of the table
-            cloudModifier.filter_axis(_cloud, _cloud, "x", 0, table_length);
+             //cloudModifier.filter_axis(_cloud, _cloud, "x", 0, table_length);
 
             //Eliminate points upper and lower side the table
             table_width = pointPicked.y;
-            cloudModifier.filter_axis(_cloud, _cloud, "y", 0, table_width);
+            //cloudModifier.filter_axis(_cloud, _cloud, "y", 0, table_width);
+
 
             //Pass the table dimensions
             objectsInfo.setDeskDimensions(table_length, table_width);
@@ -515,10 +550,26 @@ void MainWindow::on_actionInsert_new_object_triggered(){
     }
 
     else{
+
+        if(_insertingObject && _objectModifed){
+            int r = QMessageBox::warning(this,
+                                         tr("Changes not confirmed"),
+                                         tr("You have changed the object without confirm. Do you want to save the changes introduced in the object?"),
+                                         QMessageBox::Yes , QMessageBox::No);
+            if (r == QMessageBox::Yes) {
+                confirmObjectPosition();
+            }
+
+            else{
+
+               viewInteractor.removeBoundingBox();
+            }
+        }
+
         // Select which object is desired to introduce
-        selectObject objectSelection;
-        objectSelection.exec();
-        _objectName = objectSelection.getObjectName();
+        AddObject addobj;
+        addobj.exec();
+        _objectName = addobj.getObjectName();
 
         if(!_objectName.isEmpty()){
             if(objectsInfo.existsObject(_objectName)){
@@ -661,7 +712,7 @@ void MainWindow::on_actionExport_objects_info_triggered(){
         // Set the same name of the cloud file but with the extension xml
         std::string fileName = _fileName.toStdString();
         fileName.erase(fileName.find_last_of(".")+1, 3);
-        fileName.append("xml");
+        fileName.append(".xml");
 
         QString saveFileName = QFileDialog::getSaveFileName(this,
                                                             tr("Export objects' information"),
@@ -777,23 +828,49 @@ void MainWindow::on_poseInfo_itemChanged(QTreeWidgetItem *item, int column){
 }
 
 // Save the pcd file and the objects' information
-void MainWindow::on_actionSave_PCD_and_export_objects_info_triggered()
+void MainWindow::save_Option(int type)
 {
-    QString fileNamePCD = QFileDialog::getSaveFileName(this,
-                                                       tr("Save .pcd and .xml file"),
-                                                       _fileName.remove(_fileName.size()-4,4),
-                                                       tr(""));
-    QString fileNameXML = fileNamePCD;
+    QString fileNamePCD = "";
+ 
+if(_pcdLoaded){
+    
+    if (type == 1){
+    fileNamePCD = QFileDialog::getSaveFileName(this,
+                                                       tr("Save PCD and XML files"));
+                                                       //_fileName.remove(_fileName.size()-4,4),
+                                                       //tr(""));
+    }
+
+    else{
+    fileNamePCD = QFileDialog::getSaveFileName(this,
+                                                        tr("Save As PCD and XML files"));
+                                                         //_fileName.remove(_fileName.size()-4,4),
+                                                         //tr(""));
+    }
+
+    
+    if(fileNamePCD != ""){
+    _firstsave = false;
+    }
+
+    if (!fileNamePCD.contains(".", Qt::CaseInsensitive))
+        /*fileNamePCD = _fileName.remove(_fileName.indexOf("."),_fileName.length()-fileName.indexOf("."));
+    else*/
+    fileNamePCD.append(".pcd");
+
+    std::string fileName = _fileName.remove(_fileName.indexOf("."),_fileName.length()-_fileName.indexOf(".")).toStdString();
+    fileName.append(".xml");
+
+    QString fileNameXML =  QString::fromStdString(fileName);
 
     if(!fileNamePCD.isEmpty()){
         // Save the .pcd file
-        fileNamePCD.append(".pcd");
-        pcl::io::savePCDFile(fileNamePCD.toStdString(), *_cloud);
+         pcl::io::savePCDFileBinary(fileNamePCD.toStdString(), *_cloud);
         _fileName = fileNamePCD;
         _cloudModified = false;
 
         // Save the objects' information
-        fileNameXML.append(".xml");
+        //fileNameXML.append(".xml");
         if(objectsInfo.getDeskLength() != -1){
             objectsInfo.exportObjectsInformation(fileNameXML, _fileName, _scenario);
         }
@@ -802,10 +879,17 @@ void MainWindow::on_actionSave_PCD_and_export_objects_info_triggered()
                                  "XML file not saved",
                                  "The objects' information has not been saved because there is no information.");
 
+        
     }
     else{
         QMessageBox::warning(this, "Error", "Files not saved.");
     }
+}
+
+else
+    QMessageBox::warning(this,
+                         "No PCD file opened",
+                         "Open a PCD file and try again..");
 }
 
 // Enable or disable info messages
@@ -942,6 +1026,8 @@ void MainWindow::init(){
     _itemSelected = false;
     _showInfoMsgs = true;
 
+    _firstsave = false;
+
     //Set to black the background color of the QVTKWidget
     QPalette palette = _ui->qvtkWidget->palette();
     palette.setColor(QPalette::Background, QColor("black"));
@@ -992,11 +1078,12 @@ void MainWindow::visualize(){
 // Exit
 bool MainWindow::okToExit(){
     int r = QMessageBox::warning(this, tr("Exit"),
-                                 tr("Do you want to exit?"),
+                                 tr("Are you sure you want to exit?"),
                                  QMessageBox::Yes , QMessageBox::No);
     if (r == QMessageBox::Yes) {
-        return true;
-    } else return false;
+        on_actionExit_triggered();
+    } else
+        return false;
 }
 
 
@@ -1014,22 +1101,26 @@ void MainWindow::open_pcd_file(){
                                                      tr("PCD Files(*.pcd)"));
             if(!_fileName.isEmpty()){
                 load_pcd_file(_fileName);
+                _firstsave = true;
+
             }
             else{
-                QMessageBox::warning(this, "Error", "Pcd file not loaded, do it again.");
+                QMessageBox::warning(this, "Error", "PCD file not loaded, do it again.");
                 _pcdLoadError=true;
             }
         }
-    }else{
+    }
+    else{
         _fileName = QFileDialog::getOpenFileName(this,
                                                  tr("Open file"),
                                                  _lastDir,
                                                  tr("PCD Files(*.pcd)"));
         if(!_fileName.isEmpty()){
             load_pcd_file(_fileName);
+            _firstsave = true;
         }
         else{
-            QMessageBox::warning(this, "Error", "Pcd file not loaded, do it again.");
+            QMessageBox::warning(this, "Error", "PCD file not loaded, do it again.");
         }
     }
 }
@@ -1263,4 +1354,53 @@ void MainWindow::showInitialMessage(){
             write_xml(info_doc.toStdString(), root, std::locale(), settings);
         }
     }
+}
+
+
+void MainWindow::on_actionSaveAs_PCD_xml_triggered()
+{
+    save_Option(2); //Save As
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if (okToExit()){
+      event->accept();
+    } else {
+      event->ignore();
+    }
+}
+
+void MainWindow::on_actionShiftorigin_triggered()
+{
+    if(_pcdLoaded){
+
+    pointT pointPicked;
+    if (objectsInfo.numberOfObjects()==0){
+    // Pick the origin
+    if(_showInfoMsgs) QMessageBox::information(this,
+                                               "Pick the origin point",
+                                               "Pick a desired origin point with shift+left mouse button.");
+    viewInteractor.getPointPicked(&pointPicked);
+
+    // Move the pointcloud to the new origin
+    cloudModifier.translate_on_plane_x_y(_cloud, _cloud, pointPicked);
+    visualize();
+    }
+    else
+        QMessageBox::warning(this,
+                             "Cannot shift origin",
+                             "There are already some objects with the current origin as reference.");
+    }
+
+    else
+        QMessageBox::warning(this,
+                             "No PCD file opened",
+                             "Open a PCD file and try again..");
+}
+
+void MainWindow::on_actionUndoPoints_triggered()
+{
+    viewInteractor.undo_points();
 }

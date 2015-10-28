@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8 FATAL_ERROR)
 
-PROJECT(Annotation_tool)
+PROJECT(annotation_tool)
 
 
 

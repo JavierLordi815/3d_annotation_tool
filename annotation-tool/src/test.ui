@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>filtervaluesdialog</class>
- <widget class="QDialog" name="filtervaluesdialog">
+ <class>chooseObjectDialog</class>
+ <widget class="QDialog" name="chooseObjectDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>282</width>
-    <height>62</height>
+    <width>561</width>
+    <height>78</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="../icons/icons.qrc">
-    <normaloff>:/desk.png</normaloff>:/desk.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
@@ -23,21 +19,30 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Leaf size (cm):</string>
+        <string>Insert the dominant plane (desk, floor, etc.): </string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="leafSize">
-       <property name="decimals">
-        <number>2</number>
+      <widget class="QLineEdit" name="lineEdit">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>16777215</height>
+        </size>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="insert">
        <property name="text">
-        <string>Filter</string>
+        <string>Ok</string>
        </property>
       </widget>
      </item>
@@ -45,8 +50,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../icons/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

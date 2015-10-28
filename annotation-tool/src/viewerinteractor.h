@@ -9,12 +9,16 @@
 #include "pointcloudmodifier.h"
 #include "objectsinformation.h"
 
-
+#include <eigen3/Eigen/Eigen>
 
 class viewerInteractor
 {
 public:
     viewerInteractor();
+
+
+    void getPose();
+
 
     /** \brief Register the point picking callback
       */
@@ -173,6 +177,8 @@ public:
 
     Eigen::Affine3f getCameraParametersAndPose(std::vector<pcl::visualization::Camera>& cameras);
 
+    void undo_points();
+
 private:
     // PCL visualizer
     boost::shared_ptr<pcl::visualization::PCLVisualizer> _viewer;
@@ -190,6 +196,7 @@ private:
 
     // Current box transformation
     Eigen::Affine3f _transformation;
+    Eigen::Affine3f _viewPose;
 
     // Bounding box as a point cloud
     pcl::PointCloud<pcl::PointXYZ>::Ptr boundingBox;
@@ -197,6 +204,12 @@ private:
     /** \brief Actualize the box transformation
       */
     void actualizeTransformation();
+
+    bool points_picked;
+    bool first_pick;
+    int npointsToBepicked;
+
+
 };
 
 #endif // VIEWERINTERACTOR_H

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QTreeWidgetItem>
 
+#include <QCloseEvent>
+
 #include "objectsinformation.h"
 #include "pointcloudmodifier.h"
 #include "viewerinteractor.h"
@@ -31,9 +33,12 @@ public:
 
     void showInitialMessage();
 
+
 // All the slots to interact with the application
 // More details about them in the .cpp file
-private slots:
+
+private Q_SLOTS:
+
     void on_actionOpen_triggered();
 
     void on_actionExit_triggered();
@@ -124,13 +129,19 @@ private slots:
 
     void on_actionDownsample_point_cloud_triggered();
 
-    void on_actionSave_PCD_and_export_objects_info_triggered();
+    void save_Option(int type);
 
     void on_actionQSR_values_triggered();
 
     void on_actionDescription_of_scene_using_QSR_triggered();
 
     void on_actionSave_QSR_in_txt_file_triggered();
+
+    void on_actionSaveAs_PCD_xml_triggered();
+
+    void on_actionShiftorigin_triggered();
+
+    void on_actionUndoPoints_triggered();
 
 private:
     // The main window used
@@ -178,6 +189,7 @@ private:
     bool _insertingObject, _objectModifed;
     bool _itemSelected, _cloudModified;
     bool _showInfoMsgs, _showInitialMsg;
+    bool _firstsave;
 
     /** \brief Function to initialize
       */
@@ -266,6 +278,8 @@ private:
     /** \brief Confirm the object position
       */
     void confirmObjectPosition();
+
+    void closeEvent(QCloseEvent *);
 
 };
 

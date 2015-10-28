@@ -18,10 +18,8 @@ public:
     ~chooseObjectDialog();
     QString getObjectName();
     
-
-private Q_SLOTS:
-
- void on_insert_clicked();
+private slots:
+    void on_insert_clicked();
 
 private:
     Ui::chooseObjectDialog *ui;
